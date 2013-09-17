@@ -1,29 +1,25 @@
 # coding: utf-8
 require "bundler/capistrano"
 require "sidekiq/capistrano"
-
 require "rvm/capistrano"
-default_run_options[:pty] = true
-set :rvm_ruby_string, 'ruby-2.0.0-p0'
-set :rvm_type, :user
 
+default_run_options[:pty] = true
+
+set :rvm_ruby_string, 'ruby-2.0.0-p247'
+set :rvm_type, :user
 set :application, "ruby-china"
 set :repository,  "git://github.com/ruby-china/ruby-china.git"
 set :branch, "master"
 set :scm, :git
 set :user, "ruby"
-if ENV["DEPLOY"] == "pre"
-  set :deploy_to, "/data/www/#{application}-pre"
-else
-  set :deploy_to, "/data/www/#{application}"
-end
+set :deploy_to, "/data/www/#{application}"
 set :runner, "ruby"
 # set :deploy_via, :remote_cache
-# set :git_shallow_clone, 1
+set :git_shallow_clone, 1
 
-role :web, "s2.ruby-china.org"                          # Your HTTP server, Apache/etc
-role :app, "s2.ruby-china.org"                          # This may be the same as your `Web` server
-role :db,  "s2.ruby-china.org", :primary => true # This is where Rails migrations will run
+role :web, "ruby-china.org"                          # Your HTTP server, Apache/etc
+role :app, "ruby-china.org"                          # This may be the same as your `Web` server
+role :db,  "ruby-china.org", :primary => true # This is where Rails migrations will run
 
 # unicorn.rb 路径
 set :unicorn_path, "#{deploy_to}/current/config/unicorn.rb"

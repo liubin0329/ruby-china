@@ -30,9 +30,23 @@
         <%= raw @topic.body_html %>
       </div>
 
+      <% if @topic.excellent? %>
+      <div class="excellent">
+        <i class="icon small_cert_on"></i> 本帖已被设为精华贴！
+        <% if admin? %>
+        <div class="opts pull-right">
+          <%= link_to raw("取消"), unsuggest_topic_path(@topic.id), method: "delete" %>
+        </div>
+        <% end %>
+      </div>
+      <% end %>
+
       <%= raw SiteConfig.after_topic_html %>
 
       <div class="tools pull-right">
+        <% if admin? and !@topic.excellent? %>
+          <%= link_to raw("<i class='icon small_cert'></i> 加精"), suggest_topic_path(@topic.id), title: "设为精华贴" , method: "patch", confirm: "确定要设置成精华贴么？" %>
+        <% end %>
         <%= topic_follow_tag(@topic) %>
         <%= likeable_tag(@topic) %>
         <%= topic_favorite_tag(@topic) %>
@@ -41,7 +55,7 @@
           <%= link_to "", topic_path(@topic.id), :method => :delete, 'data-confirm' => t("common.confirm_delete"), :class => "icon small_delete", :title => "删除本帖" %>
         <% end %>
       </div>
-      <%= social_share_button_tag("#{@topic.title} via: @#{Setting.twitter_id} ") %>
+      <%= social_share_button_tag h("#{@topic.title} via: @#{Setting.twitter_id} ") %>
     </div>
   </div>
 

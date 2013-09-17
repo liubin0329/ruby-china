@@ -46,10 +46,13 @@ RubyChina::Application.routes.draw do
       post :favorite
       post :follow
       post :unfollow
+      patch :suggest
+      delete :unsuggest
     end
     collection do
       get :no_reply
       get :popular
+      get :excellent
       get :feed
       post :preview
     end
@@ -92,6 +95,8 @@ RubyChina::Application.routes.draw do
   get "api" => "home#api", as: 'api'
   mount RubyChina::API => "/"
   mount RubyChina::APIV2 => "/"
+
+  mount JasmineRails::Engine => "/specs" if defined?(JasmineRails)
 
   # WARRING! 请保持 User 的 routes 在所有路由的最后，以便于可以让用户名在根目录下面使用，而又不影响到其他的 routes
   # 比如 http://ruby-china.org/huacnlee

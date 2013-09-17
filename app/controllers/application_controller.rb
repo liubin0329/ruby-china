@@ -3,12 +3,12 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :unread_notify_count
 
-  before_filter do
+  before_filter do    
     resource = controller_name.singularize.to_sym
     method = "#{resource}_params"
     params[resource] &&= send(method) if respond_to?(method, true)
     
-    if devise_controller?
+    if devise_controller?      
       devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(*User::ACCESSABLE_ATTRS) }
       devise_parameter_sanitizer.for(:account_update) { |u| u.permit(*User::ACCESSABLE_ATTRS) }
       devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(*User::ACCESSABLE_ATTRS) }
