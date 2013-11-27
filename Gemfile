@@ -51,15 +51,15 @@ gem 'redis-namespace','~> 1.2.1'
 gem "redis-objects", "0.5.2"
 
 # Markdown 格式 & 文本处理
-gem "redcarpet", "~> 2.2.2"
-gem "rouge", "~> 0.3.10"
+gem "redcarpet", "~> 3.0.0"
+gem "rouge", "~> 1.0.0"
 gem 'nokogiri', "~> 1.5.6"
 gem 'auto-space', '0.0.2'
 
 # YAML 配置信息
 gem "settingslogic", "~> 2.0.9"
 
-gem "cells", github: 'apotonick/cells', ref: '0dcdc190e949af1a821f31f33f76f407a6da47b4'
+gem "cells", '~> 3.8.8'
 
 # 队列
 gem "sidekiq", "2.5.3"
@@ -85,6 +85,8 @@ gem "god"
 
 gem 'dalli', '1.1.1'
 gem 'eventmachine', '1.0.3'
+gem "puma", "2.6.0"
+# Faye Server 需要
 gem 'thin', "1.5.0"
 
 group :development, :test do
@@ -94,6 +96,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'database_cleaner'
   gem "rspec-cells", '0.1.7'
+	gem 'fuubar'
   gem "capybara", "~> 0.4.1"
   gem 'api_taster', '0.6.0'
   gem "letter_opener"
@@ -109,6 +112,5 @@ group :development, :test do
 end
 
 group :production do
-  gem 'unicorn'
-  gem 'newrelic_rpm'
+  gem 'newrelic_rpm', "~> 3.6.8.168"
 end

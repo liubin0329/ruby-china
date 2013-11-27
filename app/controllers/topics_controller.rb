@@ -1,7 +1,7 @@
 # coding: utf-8
 class TopicsController < ApplicationController
 
-  load_and_authorize_resource :only => [:new,:edit,:create,:update,:destroy,:favorite, :follow, :unfollow, :sugges, :unsuggest]
+  load_and_authorize_resource :only => [:new,:edit,:create,:update,:destroy,:favorite, :follow, :unfollow, :suggest, :unsuggest]
 
   before_filter :set_menu_active
   caches_action :feed, :node_feed, :expires_in => 1.hours
@@ -15,7 +15,6 @@ class TopicsController < ApplicationController
 
   def feed
     @topics = Topic.recent.without_body.limit(20).includes(:node,:user, :last_reply_user)
-    response.headers['Content-Type'] = 'application/rss+xml; charset=utf-8'
     render :layout => false
   end
 
@@ -30,7 +29,6 @@ class TopicsController < ApplicationController
   def node_feed
     @node = Node.find(params[:id])
     @topics = @node.topics.recent.without_body.limit(20)
-    response.headers["Content-Type"] = "application/rss+xml"
     render :layout => false
   end
 
@@ -49,7 +47,7 @@ class TopicsController < ApplicationController
     set_seo_meta([t("topics.topic_list.recent"),t("menu.topics")].join(" &raquo; "))
     render :action => "index"
   end
-  
+
   def excellent
     @topics = Topic.excellent.recent.fields_for_list.includes(:user).paginate(page: params[:page], per_page: 15, total_entries: 500)
     drop_breadcrumb(t("topics.topic_list.excellent"))
@@ -61,6 +59,7 @@ class TopicsController < ApplicationController
     @topic = Topic.without_body.find(params[:id])
     @topic.hits.incr(1)
     @node = @topic.node
+    @show_raw = params[:raw] == "1"
 
     @per_page = Reply.per_page
     # 默认最后一页
@@ -83,7 +82,7 @@ class TopicsController < ApplicationController
     drop_breadcrumb("#{@node.try(:name)}", node_topics_path(@node.try(:id)))
     drop_breadcrumb t("topics.read_topic")
 
-    fresh_when(:etag => [@topic,@has_followed,@has_favorited,@replies,@node])
+    fresh_when(:etag => [@topic,@has_followed,@has_favorited,@replies,@node,@show_raw])
   end
 
   def new
