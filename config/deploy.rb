@@ -6,7 +6,7 @@ require 'puma/capistrano'
 
 default_run_options[:pty] = true
 
-set :rvm_ruby_string, 'ruby-2.0.0-p353'
+set :rvm_ruby_string, 'ruby-2.1.0'
 set :rvm_type, :user
 set :application, "ruby-china"
 set :repository,  "git://github.com/ruby-china/ruby-china.git"
@@ -48,6 +48,7 @@ task :init_shared_path, :roles => :web do
 end
 
 task :link_shared_files, :roles => :web do
+  run "ln -sf #{shared_path}/assets #{deploy_to}/current/public/assets"
   run "ln -sf #{deploy_to}/shared/config/*.yml #{deploy_to}/current/config/"
   run "ln -sf #{deploy_to}/shared/config/initializers/secret_token.rb #{deploy_to}/current/config/initializers"
   run "ln -sf #{deploy_to}/shared/config/faye_thin.yml #{deploy_to}/current/faye_server/thin.yml"

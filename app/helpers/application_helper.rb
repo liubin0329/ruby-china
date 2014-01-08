@@ -1,6 +1,13 @@
 # coding: utf-8
 require "redcarpet"
 module ApplicationHelper
+  def sanitize_topic(body)
+    sanitize body, :tags => %w(p br img h1 h2 h3 h4 blockquote pre code b i strong em strike u a ul ol li span), :attributes => %w(href src class title alt target rel)
+  end
+
+  def sanitize_reply(body)
+    sanitize body, :tags => %w(p br img h1 h2 h3 h4 blockquote pre code b i strong em strike u a ul ol li span), :attributes => %w(href src class title alt target rel data-floor)
+  end
 
   def notice_message
     flash_messages = []
@@ -27,7 +34,7 @@ module ApplicationHelper
   end
 
   def controller_javascript_include_tag
-    fname = 
+    fname =
     case controller_name
     when "pages","topics","notes"
       fname = "#{controller_name}.js"
@@ -49,7 +56,7 @@ module ApplicationHelper
       :autolink => true,
       :fenced_code_blocks => true
     })
-    content_tag(:div, raw(MarkdownConverter.convert(str)), :class => options[:class])
+    content_tag(:div, sanitize(MarkdownConverter.convert(str)), :class => options[:class])
   end
 
   def admin?(user = nil)
@@ -84,7 +91,7 @@ module ApplicationHelper
     data = with_output_buffer(&block)
     data = data.gsub(/\n\s+/,"")
     data = data.gsub(/>\s+</,"><")
-    raw data
+    sanitize data
   end
 
   def facebook_enable
@@ -103,7 +110,7 @@ module ApplicationHelper
   end
 
   # 可按需修改
-  LANGUAGES_LISTS = { "Ruby" => "ruby", "HTML / ERB" => "erb", "CSS / SCSS" => "scss", "JavaScript" => "js", 
+  LANGUAGES_LISTS = { "Ruby" => "ruby", "HTML / ERB" => "erb", "CSS / SCSS" => "scss", "JavaScript" => "js",
                       "YAML <i>(.yml)</i>" => "yml", "CoffeeScript" => "coffee", "Nginx / Redis <i>(.conf)</i>" => "conf",
                       "Python" => "python", "PHP" => "php", "Java" => "java", "Erlang" => "erlang", "Shell / Bash" => "shell" }
 
